@@ -26,6 +26,7 @@ for player in player19_list:
 
 X_std= (X-np.mean(X, axis=0))/ np.std(X, axis=0)
 mean_vec= np.mean(X_std, axis=0)
+
 cov_mat=(X_std-mean_vec).T.dot((X_std-mean_vec))/(X_std.shape[0]-1)
 cov_mat=np.cov(X_std.T)
 eig_vals, eig_vectors = np.linalg.eig(cov_mat)
