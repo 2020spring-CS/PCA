@@ -15,23 +15,33 @@ for line in lines:
         i += 1
     else: 
         i += 1
-
 f.close()
 
 #code from pca_1.ipynb
-X = []
-for player in player19_list:
-    stat = [player.AVG, player.XBH, player.GO, player.AO, player.GW_RBI, player.BB_K, player.P_PA, player.ISOP, player.XR, player.GPA]
-    X.append(stat)
+
+#Using list comprehension
+X= [[player.AVG, player.XBH, player.GO, player.AO, player.GW_RBI, player.BB_K, player.P_PA, player.ISOP, player.XR, player.GPA]
+ for player in player19_list]
 
 X_std= (X-np.mean(X, axis=0))/ np.std(X, axis=0)
 mean_vec= np.mean(X_std, axis=0)
 
-cov_mat=(X_std-mean_vec).T.dot((X_std-mean_vec))/(X_std.shape[0]-1)
 cov_mat=np.cov(X_std.T)
-eig_vals, eig_vectors = np.linalg.eig(cov_mat)
+eig_values, eig_vectors = np.linalg.eig(cov_mat)
 
-idx= np.argsort(eig_vals)[::-1]
+
+idx= np.argsort(eig_values)[::-1]
+eig_values=eig_values[idx]
+eig_vectors=eig_vectors[:,idx]
+
+#Find proper dimension
+explained_var = [(t/sum(eig_values))*100 for t in sorted(eig_values, reverse=True)]
+cum_explained_var= np. cumsum(explained_var)
+
+#Explain 96% of variation with 6-dimension
+a6= np.dot(X_std, eig_vectors[:,:6])
+a5= np.dot(X_std, eig_vectors[:,:5])
+a4= np.dot(X_std, eig_vectors[:,:4])
 a3= np.dot(X_std, eig_vectors[:,:3])
 a2= np.dot(X_std, eig_vectors[:,:2])
 a1= np.dot(X_std, eig_vectors[:,:1])
