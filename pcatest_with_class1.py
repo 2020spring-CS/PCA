@@ -79,7 +79,7 @@ X_std= (X-np.mean(X, axis=0))/ np.std(X, axis=0)
 mean_vec= np.mean(X_std, axis=0)
 
 cov_mat=np.cov(X_std.T)
-eig_values, eig_vectors = np.linalg.eig(pcov_mat)
+eig_values, eig_vectors = np.linalg.eig(cov_mat) #error not solved yet
 
 
 idx= np.argsort(eig_values)[::-1]
