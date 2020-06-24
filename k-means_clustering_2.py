@@ -7,25 +7,40 @@ from math import sqrt
 import numpy as np
 import matplotlib.pyplot as plt
 from copy import deepcopy
-from player_1 import Player, Pitcher
+from player_1 import Player, Record_Hitter, Record_Pitcher
 import csv
 
 
 #make list of players19
+player_list = list()
+player_names = list()
+
 f = open('player_record/player19.csv', 'rt', encoding='UTF8')
 lines = csv.reader(f)
-player19_list = list()
-i = 0
+record19 = []
 for line in lines:
-    if i > 0:
-        player19_list.append(Player(line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8], line[9], line[10], line[11], line[12], line[13]))
-        i += 1
-    else: 
-        i += 1
+    record19.append(line)
 
 f.close()
 
-X =[[player.AVG] for player in player19_list]
+i = 0
+for record in record19:
+    if i > 0:
+        if record[1] in player_names:
+            pass
+        else: 
+            player_list.append(Player(record[1], record[2], 'Hitter'))
+            player_names.append(record[1])
+            i += 1
+    else: 
+        i += 1
+
+for player in player_list:
+    for record in record19:
+        if player.name == record[1]:
+            player.update(Record_Hitter(record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13], 2019))
+
+X =[[player.record[i].AVG] for i in range(len(player.record)) for player in player_list]
 
 
 #k-means clustering
@@ -51,7 +66,7 @@ def update_centers(data_set, assignments):
     Compute the center for each of the assigned groups.
     Return `k` centers where `k` is the number of unique assignments.
     """
-    center= [np.mean(x) for x in data_set]
+    centers = [np.mean(x) for x in data_set]
     return centers
 
 
@@ -80,16 +95,13 @@ def assign_points(data_points, centers):
 
 
 def distance(a, b):
-    """
-    """
     dimensions = len(a)
-    
     _sum = 0
-    for dimension in range(dimensions):
+    for dimension in range(dimensions - 1):
         difference_sq = (a[dimension] - b[dimension]) ** 2
         _sum += difference_sq
+        print(_sum)
     return sqrt(_sum)
-
 
 def generate_k(data_set, k):
     """
@@ -146,5 +158,5 @@ axis = fig.add_subplot(111)
 axis.set_title('k-means clustering with AVG of KBO players in 2019')
 axis.grid(True)
 
-plt.scatter(k_values, player_values, c = k_values, edgecolor = 'none', s=100)
+plt.scatter(k_value, player_value, c = k_value, edgecolor = 'none', s=100)
 plt.show()

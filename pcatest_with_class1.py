@@ -32,8 +32,8 @@ for player in player_list:
             player.update(Record_Hitter(record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13], 2018))
 
 #check
-for player in player_list:
-    player.print()
+#for player in player_list:
+#    player.print()
 
 #2019
 f = open('player_record/player19.csv', 'rt', encoding='UTF8')
@@ -62,8 +62,8 @@ for player in player_list:
             player.update(Record_Hitter(record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13], 2019))
 
 #check
-for player in player_list:
-    player.print()
+#for player in player_list:
+#    player.print()
 
 '''
 Players are in player_list in the form of [[양의지18], [양의지19]]
@@ -73,7 +73,7 @@ Players are in player_list in the form of [[양의지18], [양의지19]]
 
 #Using list comprehension
 X= [[player.record[i].AVG, player.record[i].XBH, player.record[i].GO, player.record[i].AO, player.record[i].GW_RBI, player.record[i].BB_K, player.record[i].P_PA, player.record[i].ISOP, player.record[i].XR, player.record[i].GPA]
- for i in range(len(player.record) - 1) for player in player_list]
+ for i in range(len(player.record)) for player in player_list]
 
 X_std= (X-np.mean(X, axis=0))/ np.std(X, axis=0)
 mean_vec= np.mean(X_std, axis=0)

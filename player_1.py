@@ -24,7 +24,7 @@ class Record_Hitter:
         self.type = 'Hitter'
 
     def __str__(self):
-        return str(self.team) + ' 소속 ' + str(self.name)
+        return (self.rank, self.name, self.team, self.AVG, self.XBH, self.GO, self.AO, self.GW_RBI, self.BB_K, self.P_PA, self.ISOP, self.XR, self.GPA, self.year)
 
     def print(self):
         print(self.rank, self.name, self.team, self.AVG, self.XBH, self.GO, self.AO, self.GW_RBI, self.BB_K, self.P_PA, self.ISOP, self.XR, self.GPA, self.year)
