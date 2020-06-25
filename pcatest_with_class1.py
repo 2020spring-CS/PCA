@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib_toolkits.mplot3d import Axes3D 
+from mpl_toolkits.mplot3d import Axes3D 
 
 from player_1 import Player, Record_Hitter, Record_Pitcher
 import csv
@@ -19,6 +19,9 @@ for player in player_list:
         if player.name == record[1]:
             player.update(Record_Hitter(record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13], 2018))
 
+#check
+#for player in player_list:
+#    player.print()
 
 #2019
 f = open('player_record/player19.csv', 'rt', encoding='UTF8')
@@ -34,13 +37,14 @@ for player in player_list:
         if player.name == record[1]:
             player.update(Record_Hitter(record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13], 2019))
 
+#check
+#for player in player_list:
+#    player.print()
+
 '''
 Players are in player_list in the form of [[양의지18], [양의지19]]
 '''
 
-#code from pca_1.ipynb
-
-#Using list comprehension
 X= [[player.record[i].AVG, player.record[i].XBH, player.record[i].GO, player.record[i].AO, player.record[i].GW_RBI, player.record[i].BB_K, player.record[i].P_PA, player.record[i].ISOP, player.record[i].XR, player.record[i].GPA]
  for i in range(len(player.record)) for player in player_list]
 
@@ -48,8 +52,7 @@ X_std= (X-np.mean(X, axis=0))/ np.std(X, axis=0)
 mean_vec= np.mean(X_std, axis=0)
 
 cov_mat=np.cov(X_std.T)
-eig_values, eig_vectors = np.linalg.eig(cov_mat) #error not solved yet
-
+eig_values, eig_vectors = np.linalg.eig(cov_mat)
 
 idx= np.argsort(eig_values)[::-1]
 eig_values=eig_values[idx]
@@ -78,16 +81,18 @@ axis.set_ylabel("PC2")
 axis.set_title('PCA with 2-dimension')
 axis.grid(True)
 plt.show()
+print("Eigen Vectors with player records, Explaining {0}% \n PC1 : {1} with player records,\n PC2 : {2}".format(cum_explained_var[0], eig_vectors[:,:1], eig_vectors[:,1:2]))
 
 #3-dimension
-fig=plt.figure(figsize=(5,5))
+fig=plt.figure(figsize=(8,8))
 axis = fig.add_subplot(111, projection='3d')
 axis.scatter(a3[:,0], a3[:,1], a3[:,2])
 
 axis.set_xlabel("PC1")
 axis.set_ylabel("PC2")
-axis.set_ylabel("PC3")
+axis.set_zlabel("PC3")
 
 axis.set_title('PCA with 3-dimension')
 axis.grid(True)
 plt.show()
+print("Eigen Vectors with player records, Explaining {0}% \n PC1 : {1},\n PC2 : {2},\n PC3:{3}".format(cum_explained_var[1],eig_vectors[:,:1], eig_vectors[:,1:2], eig_vectors[:,2:3]))
