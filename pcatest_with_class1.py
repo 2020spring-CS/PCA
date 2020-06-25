@@ -66,6 +66,7 @@ result = filter(lambda x: x<=5, explained_var)
 
 final_dimension=explained_var.index(list(result)[0])+1
 final_PCA = np.dot(X_std, eig_vectors[:,:final_dimension])
+print("The best PCA Dimension is {0} explaining {1}%".format(final_dimension, cum_explained_var[final_dimension]))
 
 #Visualization PCA on 2-dimension
 a3= np.dot(X_std, eig_vectors[:,:3])
@@ -92,7 +93,6 @@ axis.set_xlabel("PC1")
 axis.set_ylabel("PC2")
 axis.set_zlabel("PC3")
 
-axis.set_title('PCA with 3-dimension')
 axis.grid(True)
 plt.show()
 print("Eigen Vectors with player records, Explaining {0}% \n PC1 : {1},\n PC2 : {2},\n PC3:{3}".format(cum_explained_var[1],eig_vectors[:,:1], eig_vectors[:,1:2], eig_vectors[:,2:3]))
