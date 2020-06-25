@@ -13,5 +13,5 @@
 ### 추가 제안 사항
 - 2020년 진행되고 있는 데이터 이용 -->  각 player와 pitcher의 클래스 업데이트 가능하도록 수정 (done)
 - 클래스 수정 후 pcatest_with_class1 line 82에서 error 발생. not solved yet. (done)
-- PCA 완성 후 2, 3, 4차원 결과 도출 (결과에서 component 이름 확인)
+- PCA 완성 후 2, 3, 4차원 결과 도출 (결과에서 component 이름 확인) (done)
 - 그래프 보였을 때 팀별로 색상 다르게
