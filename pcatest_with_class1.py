@@ -19,10 +19,6 @@ for player in player_list:
         if player.name == record[1]:
             player.update(Record_Hitter(record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13], 2018))
 
-#check
-#for player in player_list:
-#    player.print()
-
 #2019
 f = open('player_record/player19.csv', 'rt', encoding='UTF8')
 lines = csv.reader(f)
