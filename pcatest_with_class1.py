@@ -1,69 +1,38 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib_toolkits.mplot3d import Axes3D 
 
 from player_1 import Player, Record_Hitter, Record_Pitcher
 import csv
 
-#make list of players
-player_list = list()
-player_names = list()
-
 #2018
 f = open('player_record/player18.csv', 'rt', encoding='UTF8')
 lines = csv.reader(f)
-record18 = []
-for line in lines:
-    record18.append(line)
-
+record18 = [line for line in lines]
 f.close()
 
-i = 0
-for record in record18:
-    if i > 0:
-        player_list.append(Player(record[1], record[2], 'Hitter'))
-        player_names.append(record[1])
-        i += 1
-    else: 
-        i += 1
+player_list = [Player(record[1], record[2], 'Hitter') for record in record18[1:]]
+player_names = [record[1] for record in record18[1:]]
 
 for player in player_list:
     for record in record18:
         if player.name == record[1]:
             player.update(Record_Hitter(record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13], 2018))
 
-#check
-#for player in player_list:
-#    player.print()
 
 #2019
 f = open('player_record/player19.csv', 'rt', encoding='UTF8')
 lines = csv.reader(f)
-record19 = []
-for line in lines:
-    record19.append(line)
-
+record19 = [line for line in lines]
 f.close()
 
-i = 0
-for record in record19:
-    if i > 0:
-        if record[1] in player_names:
-            pass
-        else: 
-            player_list.append(Player(record[1], record[2], 'Hitter'))
-            player_names.append(record[1])
-            i += 1
-    else: 
-        i += 1
+player_list = [Player(record[1], record[2], 'Hitter') for record in record19[1:]]
+player_names = [record[1] for record in record19[1:]]
 
 for player in player_list:
     for record in record19:
         if player.name == record[1]:
             player.update(Record_Hitter(record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13], 2019))
-
-#check
-#for player in player_list:
-#    player.print()
 
 '''
 Players are in player_list in the form of [[양의지18], [양의지19]]
@@ -86,22 +55,39 @@ idx= np.argsort(eig_values)[::-1]
 eig_values=eig_values[idx]
 eig_vectors=eig_vectors[:,idx]
 
-#Find proper dimension
+#Find the proper dimension whose marginal explained variance is less than 5% 
 explained_var = [(t/sum(eig_values))*100 for t in sorted(eig_values, reverse=True)]
 cum_explained_var= np. cumsum(explained_var)
 
-#Explain 96% of variation with 6-dimension
-a6= np.dot(X_std, eig_vectors[:,:6])
-a5= np.dot(X_std, eig_vectors[:,:5])
-a4= np.dot(X_std, eig_vectors[:,:4])
+result = filter(lambda x: x<=5, explained_var)
+
+final_dimension=explained_var.index(list(result)[0])+1
+final_PCA = np.dot(X_std, eig_vectors[:,:final_dimension])
+
+#Visualization PCA on 2-dimension
 a3= np.dot(X_std, eig_vectors[:,:3])
 a2= np.dot(X_std, eig_vectors[:,:2])
 a1= np.dot(X_std, eig_vectors[:,:1])
 
 fig=plt.figure(figsize=(5,5))
 axis = fig.add_subplot(111)
-axis.set_title('2 component PCA')
-axis.grid(True)
+axis.scatter(a2[:,0], a2[:,1])
 
-plt.scatter(a2[:,0], a2[:, 1])
+axis.set_xlabel("PC1")
+axis.set_ylabel("PC2")
+axis.set_title('PCA with 2-dimension')
+axis.grid(True)
+plt.show()
+
+#3-dimension
+fig=plt.figure(figsize=(5,5))
+axis = fig.add_subplot(111, projection='3d')
+axis.scatter(a3[:,0], a3[:,1], a3[:,2])
+
+axis.set_xlabel("PC1")
+axis.set_ylabel("PC2")
+axis.set_ylabel("PC3")
+
+axis.set_title('PCA with 3-dimension')
+axis.grid(True)
 plt.show()
