@@ -1,6 +1,3 @@
-#추가 기능으로 사용하면 좋을 것 같아요.
-#https://365datascience.com/pca-k-means/
-
 from collections import defaultdict #나중에 제거
 from random import uniform
 from math import sqrt
@@ -10,38 +7,21 @@ from copy import deepcopy
 from player_1 import Player, Record_Hitter, Record_Pitcher
 import csv
 
-
 #make list of players19
-player_list = list()
-player_names = list()
-
-f = open('player_record/player19.csv', 'rt', encoding='UTF8')
+f = open('player_record/hitter19.csv', 'rt', encoding='UTF8')
 lines = csv.reader(f)
-record19 = []
-for line in lines:
-    record19.append(line)
-
+record19 = [line for line in lines]
 f.close()
 
-i = 0
-for record in record19:
-    if i > 0:
-        if record[1] in player_names:
-            pass
-        else: 
-            player_list.append(Player(record[1], record[2], 'Hitter'))
-            player_names.append(record[1])
-            i += 1
-    else: 
-        i += 1
+player_list = [Player(record[1], record[2], 'Hitter') for record in record19[1:]]
+player_names = [record[1] for record in record19[1:]]
 
 for player in player_list:
     for record in record19:
         if player.name == record[1]:
             player.update(Record_Hitter(record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7], record[8], record[9], record[10], record[11], record[12], record[13], 2019))
 
-X =[[player.record[i].AVG] for i in range(len(player.record) - 1) for player in player_list]
-
+X =[[player.record[i].AVG] for i in range(len(player.record)) for player in player_list]
 
 #k-means clustering
 def point_avg(points):
@@ -51,20 +31,11 @@ def point_avg(points):
     
     Returns a new point which is the center of all the points.
     """
-    dimensions = points[0]
-
-    new_center = []
-
-    for dimension in range(len(dimensions)):
-        dim_sum = 0  # dimension sum
-        for p in points:
-            dim_sum += p[dimension]
-
-        # average of each dimension
-        new_center.append(dim_sum / float(len(points)))
-
+    if len(points)==1:
+        new_center= np.mean(points)
+    else:
+        new_center= [np.mean([x[y] for x in points]) for y in range(len(points[0]))]
     return new_center
-
 
 def update_centers(data_set, assignments):
     """
@@ -74,13 +45,9 @@ def update_centers(data_set, assignments):
     Return `k` centers where `k` is the number of unique assignments.
     """
     new_means = defaultdict(list)
-    centers = []
     for assignment, point in zip(assignments, data_set):
         new_means[assignment].append(point)    
-    for points in new_means.values():
-        #print(points)
-        centers.append(point_avg(points))
-
+    centers = [point_avg(points) for points in new_means.values()]
     return centers
 
 
@@ -89,7 +56,7 @@ def assign_points(data_points, centers):
     Given a data set and a list of points betweeen other points,
     assign each point to an index that corresponds to the index
     of the center point on it's proximity to that point. 
-    Return a an array of indexes of centers that correspond to
+    Return an array of indexes of centers that correspond to
     an index in the data set; that is, if there are N points
     in `data_set` the list we return will have N elements. Also
     If there are Y points in `centers` there will be Y unique
@@ -109,17 +76,11 @@ def assign_points(data_points, centers):
 
 
 def distance(a, b):
-    """
-    """
-    dimensions = len(a)
-    
-    _sum = 0
-    for dimension in range(dimensions):
-        difference_sq = (a[dimension] - b[dimension]) ** 2
-        _sum += difference_sq
+    difference_sq= [(a[x]-b[x])**2 for x in range(len(a))]
+    _sum=sum(difference_sq)
     return sqrt(_sum)
 
-
+ 
 def generate_k(data_set, k):
     """
     Given `data_set`, which is an array of arrays,
@@ -134,8 +95,8 @@ def generate_k(data_set, k):
     for point in data_set:
         for i in range(dimensions):
             val = point[i]
-            min_key = 'min_%d' % i
-            max_key = 'max_%d' % i
+            min_key = 'min_{0}d'.format(i)
+            max_key = 'max_{0}d'.format(i)
             if min_key not in min_max or val < min_max[min_key]:
                 min_max[min_key] = val
             if max_key not in min_max or val > min_max[max_key]:
@@ -144,13 +105,11 @@ def generate_k(data_set, k):
     for _k in range(k):
         rand_point = []
         for i in range(dimensions):
-            min_val = min_max['min_%d' % i]
-            max_val = min_max['max_%d' % i]
+            min_val = min_max['min_{0}d'.format(i)]
+            max_val = min_max['max_{0}d'.format(i)]
             
             rand_point.append(uniform(min_val, max_val))
-
         centers.append(rand_point)
-
     return centers
 
 
@@ -166,11 +125,8 @@ def k_means(dataset, k):
 
 Player_kmeans = k_means(X, 3)
 Player_kmeans = list(Player_kmeans)
-k_values = []
-player_values = []
-for i, j in Player_kmeans:
-    k_values.append(i)
-    player_values.append(j)
+k_values=[i[0] for i in Player_kmeans]
+player_values=[i[1] for i in Player_kmeans]
 
 fig=plt.figure(figsize=(5,5))
 axis = fig.add_subplot(111)
